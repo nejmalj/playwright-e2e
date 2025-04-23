@@ -16,20 +16,21 @@ test.describe('basic operations', () => {
         await page.locator('.numbers').click();
         await page.locator('#button-sum').click();
         await page.locator('.numbers').click();
-        await page.locator('#button-result').click();
+        await page.locator('.btnEqual').click();
         await expect(page.locator('#banner')).toContainText('2');
     });
     test('valid substraction result', async ({ page }) => {
         await page.locator('.numbers').click();
         await page.locator('#button-substraction').click();
         await page.locator('.numbers').click();
-        await page.locator('#button-result').click();
+        await page.locator('.btnEqual').click();
         await expect(page.locator('#banner')).toContainText('0');
     });
     test('valid multiplication result', async ({ page }) => {
         await page.locator('.numbers').click();
         await page.locator('#button-multiplication').click();
         await page.locator('.numbers').click();
+        await page.locator('.btnEqual').click();
         await expect(page.locator('#banner')).toContainText('6');
     });
 })
@@ -39,20 +40,21 @@ test.describe('negative operations', () => {
         await page.locator('.numbers').click();
         await page.locator('#button-multiplication').click();
         await page.locator('.numbers').click();
-        await page.locator('#button-result').click();
+        await page.locator('.btnEqual').click();
         await expect(page.locator('#banner')).toContainText('0');
     });
     test('valid substraction result with negative number', async ({ page }) => {
         await page.locator('.numbers').click();
         await page.locator('#button-substraction').click();
         await page.locator('.numbers').click();
-        await page.locator('#button-result').click();
+        await page.locator('.btnEqual').click();
         await expect(page.locator('#banner')).toContainText('0');
     });
     test('valid multiplication result with negative number', async ({ page }) => {
         await page.locator('.numbers').click();
         await page.locator('#button-multiplication').click();
         await page.locator('.numbers').click();
+        await page.locator('.btnEqual').click();
         await expect(page.locator('#banner')).toContainText('-6');
     });
 })
