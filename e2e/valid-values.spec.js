@@ -63,3 +63,18 @@ test.describe('reset button', () => {
         await expect(page.locator('#banner')).toContainText('0');
     });
 })
+
+test.describe('too many operators', () => {
+    test('click on more than one operator', async ({ page }) => {
+        await page.locator('.operators').click();
+        await page.locator('.operators').click();
+        await expect(page.locator('#errormessage')).toContainText('Too many operators');
+    })
+})
+
+test.describe('first value is not a number', () => {
+    test('click on an operator first', async ({ page }) => {
+        await page.locator('.operators').click();
+        await expect(page.locator('#errormessage')).toContainText('You should click on a number first');
+    })
+})
