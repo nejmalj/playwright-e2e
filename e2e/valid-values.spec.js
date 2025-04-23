@@ -4,13 +4,6 @@ test.beforeEach(async ({ page }) => {
     await page.goto('http://localhost:5173/');
 });
 
-test.describe('numbers', () => {
-    test('valid numbers', async ({ page }) => {
-
-    })
-    }
-)
-
 test.describe('basic operations', () => {
     test('valid sum result', async ({ page }) => {
         await page.locator('.numbers').click();
