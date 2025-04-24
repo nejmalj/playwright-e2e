@@ -1,9 +1,9 @@
-import { useCallback, useState } from "react";
+import {useCallback, useEffect, useState} from "react";
 import "./App.css";
 
-const sum = (a, b) => a - b;
+const sum = (a, b) => a + b;
+const soustraction = (a, b) => a - b;
 const multiplication = (a, b) => a * b;
-const soustraction = (a, b) => a + b;
 
 const operations = {
     sum: { func: sum, symbol: "+" },
@@ -15,58 +15,62 @@ function App() {
     const [currentValue, updateCurrent] = useState(undefined);
     const [chiffre, updateChiffre] = useState(undefined);
     const [operation, updateOp] = useState(undefined);
+    const [error, setError] = useState("");
 
     const handleNumClick = useCallback((num) => {
-        if(operation){
-            if(chiffre){
-                updateChiffre(chiffre * 10 + num)
-            }
-            else {
-                updateChiffre(num)
-            }
+        setError("");
+        if (operation) {
+            updateChiffre((prev) => (prev !== undefined ? prev * 10 + num : num));
+        } else {
+            updateCurrent((prev) => (prev !== undefined ? prev * 10 + num : num));
         }
-        else {
-            if(currentValue){
-                updateCurrent(currentValue * 10 + num)
-            }
-            else {
-                updateCurrent(num)
-            }
+    }, [operation]);
+
+    useEffect(() => {
+        if (!currentValue && operation && chiffre === undefined) {
+            setError("You should click on a number first");
+        } else if (currentValue && chiffre !== undefined && operation) {
+            // Operation already exists and both numbers are entered
+            setError("");
         }
-    }, [currentValue, operation, chiffre])
+    }, [currentValue, chiffre, operation]);
+
+    const handleOpClick = (opName) => {
+        if (!currentValue) {
+            setError("You should click on a number first");
+        } else if (operation) {
+            setError("Too many operators");
+        } else {
+            updateOp(opName);
+            setError("");
+        }
+    };
 
     return (
         <div className="App">
             <header className="App-header">
-                <div name="screen">
-                    {`${currentValue || 0} ${
-                        currentValue && operation ? operations[operation].symbol : ""
-                    } ${
-                        currentValue && operation && (chiffre || chiffre === 0)
-                            ? chiffre
-                            : ""
-                    }
-        `}
+                <div id="banner">
+                    {`${currentValue || 0} ${operation ? operations[operation].symbol : ""} ${chiffre !== undefined ? chiffre : ""}`}
                 </div>
-                <div>
+                <div id="errormessage">{error}</div>
+                <div className="operators">
                     {Object.keys(operations).map((opName) => (
-                        <button onClick={() => updateOp(opName)}>{opName}</button>
+                        <button id={`button-${opName}`} onClick={() => handleOpClick(opName)}>
+                            {operations[opName].symbol}
+                        </button>
                     ))}
                 </div>
                 <div className="numbers">
-                    {new Array(10)
-                        .fill("")
-                        .map((e, i) => i === 3 ? 5 : i)
-                        .map((e) => (
-                            <button id={e} onClick={() => handleNumClick(e)}>
-                                {e}
-                            </button>
-                        ))}
+                    {[...Array(10).keys()].map((e) => (
+                        <button id={`${e}`} key={e} onClick={() => handleNumClick(e)}>
+                            {e}
+                        </button>
+                    ))}
                 </div>
                 <button
                     className="btnEqual"
                     onClick={() => {
-                        if ((currentValue && operation && chiffre) || chiffre === 0) {
+                        if ((currentValue !== undefined && operation && chiffre !== undefined)) {
                             const res = operations[operation].func(currentValue, chiffre);
                             updateCurrent(res);
                             updateChiffre(undefined);
@@ -75,6 +79,17 @@ function App() {
                     }}
                 >
                     =
+                </button>
+                <button
+                    id="reset-button"
+                    onClick={() => {
+                        updateCurrent(undefined);
+                        updateChiffre(undefined);
+                        updateOp(undefined);
+                        setError("");
+                    }}
+                >
+                    Reset
                 </button>
             </header>
         </div>
